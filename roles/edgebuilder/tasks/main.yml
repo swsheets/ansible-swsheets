@@ -15,7 +15,7 @@
 
 - name: Get latest edgebuilder from github
   git:
-    repo: git://github.com/citizenparker/edgebuilder.git
+    repo: git://github.com/citizenparker/swsheets.git
     dest: "{{ next_release.stdout }}"
     accept_hostkey: yes
 

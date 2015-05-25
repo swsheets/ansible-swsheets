@@ -1,5 +1,5 @@
 # ansible-swsheets
-Provisioning and Deployment for [edgebuilder](https://github.com/citizenparker/edgebuilder). This was done against DigitalOcean but any brand-new Ubuntu trusty release should work.
+Provisioning and Deployment for [swsheets](https://github.com/citizenparker/swsheets). This was done against DigitalOcean but any brand-new Ubuntu trusty release should work.
 
 ## Usage
 1. Clone this repository

@@ -1,0 +1,15 @@
+description "edgebuilder_backup"
+
+stop on runlevel [016]
+
+respawn
+
+env MIX_ENV=prod
+env PORT={{ edgebuilder_backup_port }}
+env HOME=/root
+export MIX_ENV
+export PORT
+export HOME
+
+chdir /srv/edgebuilder/backup
+exec /usr/local/bin/mix phoenix.server

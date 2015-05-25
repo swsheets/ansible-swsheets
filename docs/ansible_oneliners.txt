@@ -1,0 +1,26 @@
+# Copy a file
+ansible all -i inventory -m copy -a "src=WHATEVER dest=WHATEVER”
+
+# Ensure a package is at the latest version:
+ansible all -m yum -a "name=acme state=latest"
+
+#Ensure a package is not installed:
+ansible webservers -m yum -a "name=acme state=absent"
+
+# Add a user
+ansible all -m user -a "name=foo password=<crypted password here>"
+
+#Delete a user
+ansible all -m user -a "name=foo state=absent"
+
+#Deploy from git
+ansible all -m git -a "repo=git://foo.example.org/repo.git dest=/srv/myapp version=HEAD"
+
+# Start a service
+ansible all -m service -a "name=httpd state=started"
+
+# Restart a service
+ansible all -m service -a "name=httpd state=restarted"
+
+# Ensure a service is stopped:
+ansible all -m service -a "name=httpd state=stopped”

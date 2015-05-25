@@ -1,0 +1,12 @@
+---
+- name: Add the Erlang Solutions package repo to apt
+  apt_repository: repo='deb http://packages.erlang-solutions.com/ubuntu trusty contrib' state=present
+
+- name: Add the Erlang Solutions signing key
+  apt_key: url=http://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc state=present
+
+- name: Update the apt repo
+  apt: update_cache=yes
+
+- name: Install Elixir
+  apt: name=elixir

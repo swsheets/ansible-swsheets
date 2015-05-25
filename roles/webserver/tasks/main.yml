@@ -1,0 +1,28 @@
+---
+- name: Install nginx
+  apt: name=nginx
+
+- name: Set nginx configuration
+  template: src=edgebuilder.conf.j2 dest=/etc/nginx/sites-enabled/edgebuilder.conf
+  notify:
+    - reload nginx
+
+- name: Ensure default site is absent
+  file: path=/etc/nginx/sites-enabled/default state=absent
+  notify:
+    - reload nginx
+
+- name: Install ufw
+  apt: name=ufw
+
+- name: Setup ufw
+  ufw: state=enabled policy=deny
+
+- name: Allow ssh traffic
+  ufw: rule=allow port=22 proto=tcp
+
+- name: Allow http(s) traffic
+  ufw: rule=allow port={{ item }} proto=tcp
+  with_items:
+    - 80
+    - 443

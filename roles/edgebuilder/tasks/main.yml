@@ -1,0 +1,92 @@
+---
+- name: Ensure git is installed
+  apt: name=git
+
+- name: Ensure bcrypt is installed
+  apt: name={{item}}
+  with_items:
+      - bcrypt
+      - erlang-dev
+      - build-essential
+
+- name: Generate a release directory
+  shell: echo "/srv/edgebuilder/releases/`date +%Y%m%d%H%M%S`/"
+  register: next_release
+
+- name: Get latest edgebuilder from github
+  git:
+    repo: git://github.com/citizenparker/edgebuilder.git
+    dest: "{{ next_release.stdout }}"
+    accept_hostkey: yes
+
+- name: Install prod.secret.exs
+  template: src=prod.secret.exs.j2 dest={{ next_release.stdout }}/config/prod.secret.exs
+
+- name: Fetch dependencies and compile
+  shell: yes | mix do deps.get, compile
+  environment:
+    MIX_ENV: prod
+  args:
+    chdir: "{{ next_release.stdout }}"
+
+- name: Run migrations
+  command: mix ecto.migrate
+  environment:
+    MIX_ENV: prod
+  args:
+    chdir: "{{ next_release.stdout }}"
+
+- name: Seed database (if needed)
+  shell: mix seed && touch /srv/edgebuilder/db_seeded
+  environment:
+    MIX_ENV: prod
+  args:
+    chdir: "{{ next_release.stdout }}"
+    creates: /srv/edgebuilder/db_seeded
+
+- name: Find the current release, if any
+  command: ls /srv/edgebuilder/current
+  ignore_errors: True
+  register: has_current_release
+
+- name: Find the current release's directory, if any
+  command: readlink -f /srv/edgebuilder/current
+  when: has_current_release.rc == 0
+  register: current_release
+
+- name: Launch backup
+  when: has_current_release.rc == 0
+  service: name=edgebuilder_backup state=started
+
+- name: Wait until backup has started
+  when: has_current_release.rc == 0
+  shell: until curl localhost:{{ edgebuilder_backup_port }}; do sleep 2; done
+
+- name: Stop primary
+  when: has_current_release.rc == 0
+  service: name=edgebuilder_primary state=stopped
+
+- name: Symlink release to current
+  file: src={{ next_release.stdout }} dest=/srv/edgebuilder/current state=link force=yes
+
+- name: Set init script for primary
+  template: src=edgebuilder_primary.conf.j2 dest=/etc/init/edgebuilder_primary.conf
+
+- name: Set init script for backup
+  template: src=edgebuilder_backup.conf.j2 dest=/etc/init/edgebuilder_backup.conf
+
+- name: Launch primary
+  service: name=edgebuilder_primary state=started
+
+- name: Wait until primary has started
+  shell: until curl localhost:{{ edgebuilder_primary_port }}; do sleep 2; done
+
+- name: Stop backup
+  service: name=edgebuilder_backup state=stopped
+
+- name: Symlink release to backup
+  file: src={{ next_release.stdout }} dest=/srv/edgebuilder/backup state=link force=yes
+
+- name: Remove old release (if any)
+  command: rm -rf {{ current_release.stdout }}
+  when: has_current_release.rc == 0

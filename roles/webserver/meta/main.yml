@@ -1,0 +1,14 @@
+---
+dependencies:
+  - role: nickhammond.logrotate
+    logrotate_scripts:
+      - name: edgebuilder
+        path: "/var/log/upstart/edgebuilder*.log"
+        options:
+          - daily
+          - rotate 14
+          - size 25M
+          - missingok
+          - compress
+          - delaycompress
+          - copytruncate

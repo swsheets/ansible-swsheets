@@ -1,0 +1,1 @@
+ansible-playbook -i production deploy.yml --ask-sudo-pass --ask-vault-pass

@@ -3,11 +3,17 @@
   apt: name={{item}}
   with_items:
       - postgresql
+      - postgresql-contrib
       - libpq-dev
       - python-psycopg2
 
 - name: ensure database is created
   postgresql_db: name={{dbname}}
+  sudo: yes
+  sudo_user: postgres
+
+- name: set up pgcrypto for the database
+  postgresql_ext: name=pgcrypto db={{dbname}}
   sudo: yes
   sudo_user: postgres
 

@@ -6,6 +6,5 @@ mailgun_domain: mg.mydomain.com
 mailgun_from: Me <me@mydomain.com>
 mailgun_api_key: mykeyhere
 edgebuilder_secret_key_base: 64_character_random_string
-edgebuilder_cookie_key: some_uuid
 edgebuilder_primary_port: your_favorite_port
 edgebuilder_backup_port: your_second_favorite_port

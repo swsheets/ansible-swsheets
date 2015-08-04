@@ -34,13 +34,12 @@
   args:
     chdir: "{{ next_release.stdout }}"
 
-- name: Seed database (if needed)
-  shell: mix seed && touch /srv/edgebuilder/db_seeded
+- name: Seed database
+  shell: mix seed
   environment:
     MIX_ENV: prod
   args:
     chdir: "{{ next_release.stdout }}"
-    creates: /srv/edgebuilder/db_seeded
 
 - name: Find the current release, if any
   command: ls /srv/edgebuilder/current

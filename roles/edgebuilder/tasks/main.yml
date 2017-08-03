@@ -5,6 +5,7 @@
       - git
       - bcrypt
       - erlang-dev
+      - erlang-parsetools
       - build-essential
 
 - name: Generate a release directory

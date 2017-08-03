@@ -1,3 +1,3 @@
 ---
 dependencies:
-  - { role: kamaln7.swapfile, swapfile_size: 8GB }
+  - { role: kamaln7.swapfile, swapfile_size: 12GB }

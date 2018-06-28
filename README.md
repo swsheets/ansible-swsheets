@@ -5,7 +5,7 @@ Even if you aren’t using SWSheets (although how couldn’t you?!), please feel
 
 ## Usage
 1. Clone this repository
-2. Run `ansible-galaxy install requirements.txt`
+2. Run `ansible-galaxy install -r requirements.yml`
 3. Add your server information to an [Ansible inventory file](http://docs.ansible.com/intro_inventory.html) called “production”
 4. Make a copy of `group_vars` with appropriate values and encrypting it with [Ansible Vault](https://docs.ansible.com/playbooks_vault.html).
 5. Run through the steps in docs/initial_setup.md (Sorry, I haven't bothered to put that initial setup in Ansible yet!)

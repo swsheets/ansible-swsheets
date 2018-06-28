@@ -1,2 +1,0 @@
-kamaln7.swapfile
-nickhammond.logrotate
